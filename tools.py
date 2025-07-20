@@ -34,8 +34,10 @@ def get_player_networth(market: market.Market, data):
 
     inventory_networth = {'a': 0, 'b': 0}
     for inventory_item in data['characterItems']:
-        inventory_networth['a'] += market.get_price(item.Item(inventory_item['itemHrid'], inventory_item['enhancementLevel']), mode='a')
-        inventory_networth['b'] += market.get_price(item.Item(inventory_item['itemHrid'], inventory_item['enhancementLevel']), mode='b')
+        inventory_networth['a'] += (market.get_price(item.Item(inventory_item['itemHrid'], inventory_item['enhancementLevel']), mode='a')
+                                    * inventory_item['count'])
+        inventory_networth['b'] += (market.get_price(item.Item(inventory_item['itemHrid'], inventory_item['enhancementLevel']), mode='b')
+                                    * inventory_item['count'])
 
     market_networth = {'a': 0, 'b': 0}
     for listing in data['myMarketListings']:
@@ -62,7 +64,7 @@ def get_player_networth(market: market.Market, data):
 
 
 if __name__ == '__main__':
-    market = market.Market()
+    market = market.Market(enhance_item_mode='force')
     with open('AlphB.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     res = get_player_networth(market, data)
